@@ -38,6 +38,10 @@ func TestGcost(t *testing.T) {
 	if Gcost(&Node1, &Node2) != 10 {
 		t.Errorf("G cost for nodes on the same X-Axis should be 10")
 	}
+	// See if the side effect applied properly
+	if Node1.Gscore != 10 {
+		t.Errorf("struct Node's Gscore not updating")
+	}
 	// Create two nodes at the same Y positions, should return 10
 	Node1 = Node{2, 0, 0, 0, 0, nil}
 	Node2 = Node{1, 0, 0, 0, 0, nil}
@@ -61,6 +65,10 @@ func TestHcost(t *testing.T) {
 	//Test for when Node and goal are separated by a distance of 7
 	if Hcost(&Node, goal) != 7 {
 		t.Errorf("distance to goal should be 7")
+	}
+	// Check side effect
+	if Node.Hscore != 7 {
+		t.Errorf("struct Node's Gscore not updating")
 	}
 	// Test for when Node == Goal
 	Node.X = 5
