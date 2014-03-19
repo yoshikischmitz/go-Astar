@@ -1,6 +1,10 @@
 package main
 
-import "testing"
+import (
+	"math/rand"
+	"sort"
+	"testing"
+)
 
 var (
 	testMap [][]int = [][]int{
@@ -82,5 +86,44 @@ func TestHcost(t *testing.T) {
 	Node.Y = -2
 	if Hcost(&Node, goal) != 12 {
 		t.Errorf("distance to goal should be 12")
+	}
+}
+
+// Returns a slice of nodes with randomly generated fscores
+func GenerateRandomNodes(size int) (nodes []Node) {
+	for i := 0; i < size; i++ {
+		newNode := Node{Fscore: rand.Int()}
+		nodes = append(nodes, newNode)
+	}
+	return
+}
+
+func IsSorted(nodeList []Node) bool {
+	for i, n := range nodeList {
+		if i == len(nodeList)-1 {
+			break
+		}
+		if n.Fscore > nodeList[i+1].Fscore {
+			return false
+		}
+	}
+	return true
+}
+
+// Generate a random set of nodes and see if they sort properly
+func TestSort(t *testing.T) {
+	nodeList := GenerateRandomNodes(40)
+
+	sort.Sort(ByFscore(nodeList))
+
+	if IsSorted(nodeList) == false {
+		t.Errorf("Node list not sorted")
+	}
+
+	// Check if a pre-sorted list stays sorted
+	sort.Sort(ByFscore(nodeList))
+
+	if IsSorted(nodeList) == false {
+		t.Errorf("pre-sorted list returning unsorted")
 	}
 }
