@@ -1,13 +1,14 @@
 package main
 
 import (
+	"fmt"
 	"math"
 	"sort"
 )
 
 var (
 	mapArr [][]int = [][]int{
-		{0, 0, 0, 0, 0, 0, 0},
+		{0, 0, 0, 2, 0, 0, 0},
 		{0, 0, 0, 2, 0, 0, 0},
 		{0, 1, 0, 2, 0, 3, 0},
 		{0, 0, 0, 2, 0, 0, 0},
@@ -56,7 +57,6 @@ func Fcost(n *Node) int {
 	return n.Fscore
 }
 
-// Parses map and returns cartesian coords for start and goal
 // Takes a node and calculates its heuristic distance from the goal(or any x y coordinates)
 // Assigns the h_score to the node as a side effect
 func Hcost(n *Node, goal []int) int {
@@ -90,28 +90,87 @@ func SortNodes(nodes []Node) {
 	sort.Sort(ByFscore(nodes))
 }
 
-func Astar(start []int, goal []int) (path [][]int) {
+func InMap(x int, y int, mapArr [][]int) bool {
+	if x < 0 || x > (len(mapArr)-1) || y < 0 || y > (len(mapArr[0])-1) {
+		return false
+	}
+	if mapArr[x][y] == 2 {
+		return false
+	}
+	return true
+}
+
+func Includes(n *Node, NodeList []Node) bool {
+	for _, x := range NodeList {
+		if n.Eql(&x) {
+			return true
+		}
+	}
+	return false
+}
+
+func Astar(start []int, goal []int) (path []int) {
 	startNode := Node{
 		X:      start[0],
 		Y:      start[1],
 		Gscore: 0,
 	}
-	/* goalNode  := Node{
+	goalNode := Node{
 		X: goal[0],
 		Y: goal[1],
-	} */
-	//closedset := []Node{}
-	openset := []Node{startNode}
-	Fcost(&startNode)
-	Hcost(&startNode, goal)
-
-	// This is where the real action starts
-	for len(openset) != 0 {
-
 	}
+	closedSet := []Node{}
+	openSet := []Node{startNode}
+	Hcost(&startNode, goal)
+	Fcost(&startNode)
+	// This is where the real action starts
+	for len(openSet) != 0 {
+		SortNodes(openSet)
+		cNode := openSet[0]
+		if cNode.Eql(&goalNode) {
+			at_start := false
+			pNode := cNode
+			for at_start == false {
+				fmt.Println(pNode.X, pNode.Y)
+				pNode = *pNode.Parent
+				if pNode.Parent == nil {
+					fmt.Println(pNode.X, pNode.Y)
+					break
+				}
+			}
+			return path
+		}
+		openSet = openSet[1:]
+		closedSet = append(closedSet, cNode)
+		// xS is for xShift
+		for xS := -1; xS < 2; xS++ {
+			x := cNode.X + xS
+			for yS := 1; yS < 2; yS++ {
+				y := cNode.Y + yS
+				if InMap(x, y, mapArr) == false {
+					continue
+				}
+				neighbor := Node{X: x, Y: y}
+				if Includes(&neighbor, closedSet) {
+					continue
+				}
+				tentativeGscore := Gcost(&cNode, &neighbor) + cNode.Gscore
+				if Includes(&neighbor, openSet) == false || tentativeGscore < neighbor.Gscore {
+					neighbor.Parent = &cNode
+
+					neighbor.Gscore = tentativeGscore
+					Hcost(&neighbor, goal)
+					Fcost(&neighbor)
+					openSet = append(openSet, neighbor)
+				}
+			}
+		}
+	}
+	println("failed")
 	return path
 }
 
 func main() {
-
+	start, goal := ParseMap(mapArr)
+	fmt.Println(Astar(start, goal))
 }
