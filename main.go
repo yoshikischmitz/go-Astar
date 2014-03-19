@@ -1,7 +1,6 @@
 package main
 
 import (
-	"fmt"
 	"math"
 	"sort"
 )
@@ -87,8 +86,8 @@ func (n1 *Node) Eql(n2 *Node) bool {
 	return n1.X == n2.X && n1.Y == n2.Y
 }
 
-func SortNodes(*[]Node) {
-
+func SortNodes(nodes []Node) {
+	sort.Sort(ByFscore(nodes))
 }
 
 func Astar(start []int, goal []int) (path [][]int) {
@@ -114,13 +113,5 @@ func Astar(start []int, goal []int) (path [][]int) {
 }
 
 func main() {
-	nodes := []Node{
-		Node{Fscore: 2},
-		Node{Fscore: 0},
-		Node{Fscore: 3},
-		Node{Fscore: 1},
-	}
-	fmt.Println(nodes)
-	sort.Sort(ByFscore(nodes))
-	fmt.Println(nodes)
+
 }
