@@ -1,7 +1,10 @@
 package main
 
-import "fmt"
-import "math"
+import (
+	"fmt"
+	"math"
+	"sort"
+)
 
 var (
 	mapArr [][]int = [][]int{
@@ -26,6 +29,9 @@ type Node struct {
 
 type ByFscore []Node
 
+func (ns ByFscore) Len() int           { return len(ns) }
+func (ns ByFscore) Swap(i, j int)      { ns[i], ns[j] = ns[j], ns[i] }
+func (ns ByFscore) Less(i, j int) bool { return ns[i].Fscore < ns[j].Fscore }
 
 // Parses map and returns cartesian coords for start and goal
 func ParseMap(Map [][]int) (start []int, goal []int) {
@@ -45,8 +51,10 @@ func ParseMap(Map [][]int) (start []int, goal []int) {
 }
 
 // Assigns the Nodes Fcost
-func Fcost(n *Node){
+// Returns the new fscore
+func Fcost(n *Node) int {
 	n.Fscore = n.Gscore + n.Hscore
+	return n.Fscore
 }
 
 // Parses map and returns cartesian coords for start and goal
@@ -75,17 +83,18 @@ func Gcost(n1 *Node, n2 *Node) int {
 }
 
 // Compares one node to another
-func (n1 *Node) Eql (n2 *Node) bool{
+func (n1 *Node) Eql(n2 *Node) bool {
 	return n1.X == n2.X && n1.Y == n2.Y
 }
 
 func SortNodes(*[]Node) {
-	
+
 }
+
 func Astar(start []int, goal []int) (path [][]int) {
 	startNode := Node{
-		X: start[0],
-		Y: start[1],
+		X:      start[0],
+		Y:      start[1],
 		Gscore: 0,
 	}
 	/* goalNode  := Node{
@@ -93,7 +102,7 @@ func Astar(start []int, goal []int) (path [][]int) {
 		Y: goal[1],
 	} */
 	//closedset := []Node{}
-	openset	  := []Node{startNode}
+	openset := []Node{startNode}
 	Fcost(&startNode)
 	Hcost(&startNode, goal)
 
@@ -105,8 +114,13 @@ func Astar(start []int, goal []int) (path [][]int) {
 }
 
 func main() {
-	start, goal := ParseMap(mapArr)
-	fmt.Println(start, goal)
-	path := Astar(start, goal)
-	fmt.Println(path)
+	nodes := []Node{
+		Node{Fscore: 2},
+		Node{Fscore: 0},
+		Node{Fscore: 3},
+		Node{Fscore: 1},
+	}
+	fmt.Println(nodes)
+	sort.Sort(ByFscore(nodes))
+	fmt.Println(nodes)
 }
