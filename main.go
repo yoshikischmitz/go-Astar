@@ -97,8 +97,25 @@ func Includes(n *Node, NodeList []Node) bool {
 	}
 	return false
 }
+func buildPath(cNode Node) (path [][]int) {
+	at_start := false
+	pNode := cNode
+	for at_start == false {
+		path = append(path, []int{pNode.X, pNode.Y})
+		pNode = *pNode.Parent
+		if pNode.Parent == nil {
+			path = append(path, []int{pNode.X, pNode.Y})
+			break
+		}
+	}
+	return
+}
 
-func Astar(start []int, goal []int, mapArr [][]int) (path [][]int) {
+// Takes a start and goal as x,y coordinates, as well as the map, and finds the shortest path
+// to goal from start using the A* pathfinding algorithm. Returns a two dimensional array of x,y
+// coordinates plotting the path from start to goal if it succeeds, else it returns an empty array
+// and an error.
+func Astar(start []int, goal []int, mapArr [][]int) ([][]int, error) {
 	startNode := Node{
 		X:      start[0],
 		Y:      start[1],
@@ -117,17 +134,7 @@ func Astar(start []int, goal []int, mapArr [][]int) (path [][]int) {
 		SortNodes(openSet)
 		cNode := openSet[0]
 		if cNode.Eql(&goalNode) {
-			at_start := false
-			pNode := cNode
-			for at_start == false {
-				path = append(path, []int{pNode.X, pNode.Y})
-				pNode = *pNode.Parent
-				if pNode.Parent == nil {
-					path = append(path, []int{pNode.X, pNode.Y})
-					break
-				}
-			}
-			return path
+			return buildPath(cNode), nil
 		}
 		openSet = openSet[1:]
 		closedSet = append(closedSet, cNode)
@@ -155,5 +162,5 @@ func Astar(start []int, goal []int, mapArr [][]int) (path [][]int) {
 			}
 		}
 	}
-	return path
+	return [][]int{}, nil
 }
