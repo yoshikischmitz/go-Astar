@@ -109,7 +109,7 @@ func Includes(n *Node, NodeList []Node) bool {
 	return false
 }
 
-func Astar(start []int, goal []int) (path []int) {
+func Astar(start []int, goal []int) (path [][]int) {
 	startNode := Node{
 		X:      start[0],
 		Y:      start[1],
@@ -131,10 +131,10 @@ func Astar(start []int, goal []int) (path []int) {
 			at_start := false
 			pNode := cNode
 			for at_start == false {
-				fmt.Println(pNode.X, pNode.Y)
+				path = append(path, []int{pNode.X, pNode.Y})
 				pNode = *pNode.Parent
 				if pNode.Parent == nil {
-					fmt.Println(pNode.X, pNode.Y)
+					path = append(path, []int{pNode.X, pNode.Y})
 					break
 				}
 			}
@@ -166,7 +166,6 @@ func Astar(start []int, goal []int) (path []int) {
 			}
 		}
 	}
-	println("failed")
 	return path
 }
 
