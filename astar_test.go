@@ -24,8 +24,8 @@ func EqualPosition(xy1 []int, xy2 []int) bool {
 
 func TestMap(t *testing.T) {
 	start, goal := ParseMap(testMap)
-	expected_start := []int{1, 2}
-	expected_goal := []int{5, 2}
+	expected_start := []int{2, 1}
+	expected_goal := []int{2, 5}
 	if EqualPosition(start, expected_start) == false {
 		t.Errorf("start is %d, should be %d", start, expected_start)
 	}
