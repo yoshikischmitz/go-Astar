@@ -2,6 +2,7 @@ package main
 
 import (
 	"math/rand"
+	"reflect"
 	"testing"
 )
 
@@ -124,5 +125,34 @@ func TestSort(t *testing.T) {
 
 	if IsSorted(nodeList) == false {
 		t.Errorf("pre-sorted list returning unsorted")
+	}
+}
+
+func AstarWorking(mapArr [][]int, expected_path [][]int) ([][]int, bool) {
+	start, goal := ParseMap(mapArr)
+	path := Astar(start, goal, mapArr)
+	if reflect.DeepEqual(path, expected_path) == false {
+		return path, false
+	}
+	return path, true
+}
+
+func TestAstar(t *testing.T) {
+	mapArr := [][]int{
+		{0, 0, 0, 2, 0, 0, 0},
+		{0, 0, 0, 2, 0, 0, 0},
+		{0, 1, 0, 2, 0, 3, 0},
+		{0, 0, 0, 2, 0, 0, 0},
+		{0, 0, 0, 0, 0, 0, 0},
+	}
+	expected_path := [][]int{
+		{2, 5},
+		{3, 4},
+		{4, 3},
+		{3, 2},
+		{2, 1},
+	}
+	if path, working := AstarWorking(mapArr, expected_path); working == false {
+		t.Errorf("Astar returned path %d, should be %d", path, expected_path)
 	}
 }

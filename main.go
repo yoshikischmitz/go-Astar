@@ -1,19 +1,8 @@
 package main
 
 import (
-	"fmt"
 	"math"
 	"sort"
-)
-
-var (
-	mapArr [][]int = [][]int{
-		{0, 0, 0, 2, 0, 0, 0},
-		{0, 0, 0, 2, 0, 0, 0},
-		{0, 1, 0, 2, 0, 3, 0},
-		{0, 0, 0, 2, 0, 0, 0},
-		{0, 0, 0, 0, 0, 0, 0},
-	}
 )
 
 // In this program it is understood that GScore refers to the value returned by the function
@@ -109,7 +98,7 @@ func Includes(n *Node, NodeList []Node) bool {
 	return false
 }
 
-func Astar(start []int, goal []int) (path [][]int) {
+func Astar(start []int, goal []int, mapArr [][]int) (path [][]int) {
 	startNode := Node{
 		X:      start[0],
 		Y:      start[1],
@@ -167,9 +156,4 @@ func Astar(start []int, goal []int) (path [][]int) {
 		}
 	}
 	return path
-}
-
-func main() {
-	start, goal := ParseMap(mapArr)
-	fmt.Println(Astar(start, goal))
 }
