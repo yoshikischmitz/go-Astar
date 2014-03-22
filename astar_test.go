@@ -116,9 +116,7 @@ func IsSorted(nodeList []Node) bool {
 // Generate a random set of nodes and see if they sort properly
 func TestSort(t *testing.T) {
 	nodeList := GenerateRandomNodes(40)
-
 	SortNodes(nodeList)
-
 	if IsSorted(nodeList) == false {
 		t.Errorf("Node list not sorted")
 	}
@@ -134,7 +132,7 @@ func TestSort(t *testing.T) {
 // Helper function for TestAstar, to reduce code duplication
 func AstarWorking(mapArr [][]int, expected_path [][]int) ([][]int, bool) {
 	start, goal := ParseMap(mapArr)
-	path := Astar(start, goal, mapArr)
+	path, _ := Astar(start, goal, mapArr)
 	if reflect.DeepEqual(path, expected_path) == false {
 		return path, false
 	}
