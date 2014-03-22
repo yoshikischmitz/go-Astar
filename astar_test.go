@@ -98,11 +98,14 @@ func GenerateRandomNodes(size int) (nodes []Node) {
 	return
 }
 
+// Takes a list of nodes and checks if they are sorted by F Score.
 func IsSorted(nodeList []Node) bool {
 	for i, n := range nodeList {
+		// If our index is at the edge of the nodelist, break.
 		if i == len(nodeList)-1 {
 			break
 		}
+		// Check that the current element's Fscore is less than the next.
 		if n.Fscore > nodeList[i+1].Fscore {
 			return false
 		}
@@ -128,6 +131,7 @@ func TestSort(t *testing.T) {
 	}
 }
 
+// Helper function for TestAstar, to reduce code duplication
 func AstarWorking(mapArr [][]int, expected_path [][]int) ([][]int, bool) {
 	start, goal := ParseMap(mapArr)
 	path := Astar(start, goal, mapArr)
