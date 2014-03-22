@@ -2,7 +2,6 @@ package main
 
 import (
 	"math/rand"
-	"sort"
 	"testing"
 )
 
@@ -25,8 +24,8 @@ func EqualPosition(xy1 []int, xy2 []int) bool {
 
 func TestMap(t *testing.T) {
 	start, goal := ParseMap(testMap)
-	expected_start := []int{2, 1}
-	expected_goal := []int{2, 5}
+	expected_start := []int{1, 2}
+	expected_goal := []int{5, 2}
 	if EqualPosition(start, expected_start) == false {
 		t.Errorf("start is %d, should be %d", start, expected_start)
 	}
@@ -114,14 +113,14 @@ func IsSorted(nodeList []Node) bool {
 func TestSort(t *testing.T) {
 	nodeList := GenerateRandomNodes(40)
 
-	sort.Sort(ByFscore(nodeList))
+	SortNodes(nodeList)
 
 	if IsSorted(nodeList) == false {
 		t.Errorf("Node list not sorted")
 	}
 
 	// Check if a pre-sorted list stays sorted
-	sort.Sort(ByFscore(nodeList))
+	SortNodes(nodeList)
 
 	if IsSorted(nodeList) == false {
 		t.Errorf("pre-sorted list returning unsorted")
