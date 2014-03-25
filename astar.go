@@ -83,11 +83,11 @@ func (n1 *Node) Eql(n2 *Node) bool {
 }
 
 // Checks if coordinates are within the bounds of the map.
-func InMap(x int, y int, mapArr [][]int) bool {
-	if x < 0 || x > (len(mapArr)-1) || y < 0 || y > (len(mapArr[0])-1) {
+func InMap(n Node, mapArr [][]int) bool {
+	if n.X < 0 || n.X > (len(mapArr)-1) || n.Y < 0 || n.Y > (len(mapArr[0])-1) {
 		return false
 	}
-	if mapArr[x][y] == 2 {
+	if mapArr[n.X][n.Y] == 2 {
 		return false
 	}
 	return true
@@ -113,6 +113,18 @@ func buildPath(cNode Node) (path [][]int) {
 		if pNode.Parent == nil {
 			path = append(path, []int{pNode.X, pNode.Y})
 			break
+		}
+	}
+	return
+}
+
+func NeighborNodes(n *Node) (neighbors []Node) {
+	for xS := -1; xS < 2; xS++ {
+		x := n.X + xS
+		for yS := 1; yS < 2; yS++ {
+			y := n.Y + yS
+			cNeighbor := Node{X: x, Y: y}
+			neighbors = append(neighbors, cNeighbor)
 		}
 	}
 	return
@@ -146,26 +158,21 @@ func Astar(start []int, goal []int, mapArr [][]int) ([][]int, error) {
 		openSet = openSet[1:]
 		closedSet = append(closedSet, cNode)
 		// xS is for xShift
-		for xS := -1; xS < 2; xS++ {
-			x := cNode.X + xS
-			for yS := 1; yS < 2; yS++ {
-				y := cNode.Y + yS
-				if InMap(x, y, mapArr) == false {
-					continue
-				}
-				neighbor := Node{X: x, Y: y}
-				if Includes(&neighbor, closedSet) {
-					continue
-				}
-				tentativeGscore := Gcost(&cNode, &neighbor) + cNode.Gscore
-				if Includes(&neighbor, openSet) == false || tentativeGscore < neighbor.Gscore {
-					neighbor.Parent = &cNode
+		for _, neighbor := range NeighborNodes(&cNode) {
+			if InMap(neighbor, mapArr) == false {
+				continue
+			}
+			if Includes(&neighbor, closedSet) {
+				continue
+			}
+			tentativeGscore := Gcost(&cNode, &neighbor) + cNode.Gscore
+			if Includes(&neighbor, openSet) == false || tentativeGscore < neighbor.Gscore {
+				neighbor.Parent = &cNode
 
-					neighbor.Gscore = tentativeGscore
-					Hcost(&neighbor, goal)
-					Fcost(&neighbor)
-					openSet = append(openSet, neighbor)
-				}
+				neighbor.Gscore = tentativeGscore
+				Hcost(&neighbor, goal)
+				Fcost(&neighbor)
+				openSet = append(openSet, neighbor)
 			}
 		}
 	}
