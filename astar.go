@@ -157,7 +157,6 @@ func Astar(start []int, goal []int, mapArr [][]int) ([][]int, error) {
 		}
 		openSet = openSet[1:]
 		closedSet = append(closedSet, cNode)
-		// xS is for xShift
 		for _, neighbor := range NeighborNodes(&cNode) {
 			if InMap(neighbor, mapArr) == false {
 				continue
